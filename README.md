@@ -35,6 +35,20 @@ macOS
 ssh-add $HOME/.ssh/github_rsa
 ```
 
+## Terraform
+
+### state management
+```tf
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "<STATE RESOURE GROUP>"
+    storage_account_name = "<SA NAME>
+    container_name       = "<CONTAINER NAME>"
+    key                  = "<GITHUB_USERNAME>"
+  }
+}
+```
+
 ### azurerm Terraform provider
 ```tf
 locals {
