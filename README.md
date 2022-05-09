@@ -135,7 +135,7 @@ __Takeaways__: Notice how quick it is to be working in a dev environment that ca
 2. Use a Starter Workflow called ".NET Build and Push"
 3. Configure app specifics, trigger workflow with code change, PR to trigger a build and push image to GitHub Packages (ghcr.io)
 
-_Takeaways__: Codespaces + GitHub is all you need to dev, build, automate from a web browser. Build Artifact and Image both consumeable from GitHub for any testing, troubleshooting if need be.
+__Takeaways__: Codespaces + GitHub is all you need to dev, build, automate from a web browser. Build Artifact and Image both consumeable from GitHub for any testing, troubleshooting if need be.
 
 ### Codespaces Terraform
 1. Create a simple terraform configuration using boilerplate here.
