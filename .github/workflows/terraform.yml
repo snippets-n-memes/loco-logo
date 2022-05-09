@@ -1,0 +1,75 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches:
+      - dev
+      - trunk
+    paths:
+      - terraform/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+jobs:
+  plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Terraform Plan
+      run: |
+        terraform init
+        terraform plan -input=false -out=tfplan
+
+    - name: Upload Plan Artifact
+      if: github.ref == 'refs/heads/trunk'
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: tfplan
+        path: terraform/tfplan
+    
+  apply:
+    needs: plan
+    if: github.ref == 'refs/heads/trunk'
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Download Plan Artifact
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: tfplan
+        path: terraform/
+
+    - name: Terraform Apply
+      run: |
+        terraform init
+        terraform apply -input=false tfplan
+
+    - uses: snippets-n-memes/delete-artifact@v1
+      with:
+        name: tfplan
